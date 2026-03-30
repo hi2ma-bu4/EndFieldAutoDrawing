@@ -1,12 +1,13 @@
 export type Direction = "top" | "bottom" | "left" | "right";
+export type Rotation = 0 | 90 | 180 | 270;
 
 type MachineBase = {
 	id: string;
 	name: string;
 	w: number;
 	h: number;
-	inputSides: readonly Direction[];
-	outputSides: readonly Direction[];
+	inputs: readonly Port[];
+	outputs: readonly Port[];
 	powerRequired: number;
 };
 
@@ -15,8 +16,8 @@ export interface Machine {
 	name: string; // 機械名称
 	w: number; // 横幅
 	h: number; // 縦幅
-	inputSides: readonly Direction[]; // 入力辺
-	outputSides: readonly Direction[]; // 出力辺
+	inputs: readonly Port[]; // 入力ポート
+	outputs: readonly Port[]; // 出力ポート
 	powerRequired: number; // 必要電力量
 }
 
@@ -90,14 +91,25 @@ export interface Warehouse {
 	restriction: PlacementRestriction;
 }
 
+const createSidePorts = (w: number, h: number, sides: Direction[]): Port[] => {
+	const ports: Port[] = [];
+	for (const side of sides) {
+		const count = side === "top" || side === "bottom" ? w : h;
+		for (let i = 0; i < count; i++) {
+			ports.push({ side, position: i });
+		}
+	}
+	return ports;
+};
+
 export const MACHINES = [
 	{
 		id: "Refining Unit",
 		name: "製錬炉",
 		w: 3,
 		h: 3,
-		inputSides: ["top"],
-		outputSides: ["bottom"],
+		inputs: createSidePorts(3, 3, ["top"]),
+		outputs: createSidePorts(3, 3, ["bottom"]),
 		powerRequired: 5,
 	},
 	{
@@ -105,8 +117,8 @@ export const MACHINES = [
 		name: "粉砕機",
 		w: 3,
 		h: 3,
-		inputSides: ["top"],
-		outputSides: ["bottom"],
+		inputs: createSidePorts(3, 3, ["top"]),
+		outputs: createSidePorts(3, 3, ["bottom"]),
 		powerRequired: 5,
 	},
 	{
@@ -114,8 +126,8 @@ export const MACHINES = [
 		name: "成形機",
 		w: 3,
 		h: 3,
-		inputSides: ["top"],
-		outputSides: ["bottom"],
+		inputs: createSidePorts(3, 3, ["top"]),
+		outputs: createSidePorts(3, 3, ["bottom"]),
 		powerRequired: 10,
 	},
 	{
@@ -123,8 +135,8 @@ export const MACHINES = [
 		name: "組立機",
 		w: 3,
 		h: 3,
-		inputSides: ["top"],
-		outputSides: ["bottom"],
+		inputs: createSidePorts(3, 3, ["top"]),
+		outputs: createSidePorts(3, 3, ["bottom"]),
 		powerRequired: 20,
 	},
 	{
@@ -132,8 +144,8 @@ export const MACHINES = [
 		name: "装備部品加工機",
 		w: 6,
 		h: 4,
-		inputSides: ["top"],
-		outputSides: ["bottom"],
+		inputs: createSidePorts(6, 4, ["top"]),
+		outputs: createSidePorts(6, 4, ["bottom"]),
 		powerRequired: 10,
 	},
 	{
@@ -141,8 +153,8 @@ export const MACHINES = [
 		name: "充填機",
 		w: 6,
 		h: 4,
-		inputSides: ["top"],
-		outputSides: ["bottom"],
+		inputs: createSidePorts(6, 4, ["top"]),
+		outputs: createSidePorts(6, 4, ["bottom"]),
 		powerRequired: 20,
 	},
 	{
@@ -150,8 +162,8 @@ export const MACHINES = [
 		name: "包装機",
 		w: 6,
 		h: 4,
-		inputSides: ["top"],
-		outputSides: ["bottom"],
+		inputs: createSidePorts(6, 4, ["top"]),
+		outputs: createSidePorts(6, 4, ["bottom"]),
 		powerRequired: 20,
 	},
 	{
@@ -159,8 +171,8 @@ export const MACHINES = [
 		name: "採種機",
 		w: 5,
 		h: 5,
-		inputSides: ["top"],
-		outputSides: ["bottom"],
+		inputs: createSidePorts(5, 5, ["top"]),
+		outputs: createSidePorts(5, 5, ["bottom"]),
 		powerRequired: 10,
 	},
 	{
@@ -168,8 +180,8 @@ export const MACHINES = [
 		name: "栽培機",
 		w: 5,
 		h: 5,
-		inputSides: ["top"],
-		outputSides: ["bottom"],
+		inputs: createSidePorts(5, 5, ["top"]),
+		outputs: createSidePorts(5, 5, ["bottom"]),
 		powerRequired: 20,
 	},
 ] as const satisfies readonly MachineBase[];
@@ -323,3 +335,13 @@ export const WAREHOUSES = [
 ] as const satisfies readonly WarehouseBase[];
 
 export type WarehouseId = (typeof WAREHOUSES)[number]["id"];
+
+export type Facility = Machine | Conveyor | PowerLine | Warehouse;
+
+export interface PlacedFacility {
+	facility: Facility;
+	x: number;
+	y: number;
+	rotation: Rotation;
+	conveyorPatternIndex?: number;
+}
