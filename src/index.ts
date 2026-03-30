@@ -1,4 +1,6 @@
-import { Conveyor, CONVEYORS, Machine, MACHINES, POWER_LINES, PowerLine } from "./facilities_data";
+import { type Conveyor, CONVEYORS, type Machine, MACHINES, POWER_LINES, type PowerLine } from "./facilities_data";
+import { ITEMS } from "./item_data";
+import { RECIPES } from "./recipe_data";
 
 class MapRenderer {
 	private canvas: HTMLCanvasElement;
@@ -114,4 +116,7 @@ window.onload = () => {
 
 	renderer.drawPowerLine(20, 20, POWER_LINES[0]);
 	renderer.drawPowerLine(35, 20, POWER_LINES[1]);
+
+	console.log("Items loaded:", ITEMS);
+	console.log("Recipes loaded:", RECIPES);
 };

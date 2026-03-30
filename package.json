@@ -7,7 +7,9 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "build": "node ./dev/build.mjs"
+    "build:dev": "node ./dev/build.mjs",
+    "build": "npm run typecheck && npm run build:dev",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

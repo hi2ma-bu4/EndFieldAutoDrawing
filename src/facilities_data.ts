@@ -1,12 +1,22 @@
 export type Direction = "top" | "bottom" | "left" | "right";
 
+type MachineBase = {
+	id: string;
+	name: string;
+	w: number;
+	h: number;
+	inputSides: readonly Direction[];
+	outputSides: readonly Direction[];
+	powerRequired: number;
+};
+
 export interface Machine {
-	id: string; // 機械名称(英語)
+	id: MachineId; // 機械名称(英語)
 	name: string; // 機械名称
 	w: number; // 横幅
 	h: number; // 縦幅
-	inputSides: Direction[]; // 入力辺
-	outputSides: Direction[]; // 出力辺
+	inputSides: readonly Direction[]; // 入力辺
+	outputSides: readonly Direction[]; // 出力辺
 	powerRequired: number; // 必要電力量
 }
 
@@ -15,23 +25,39 @@ export interface ConveyorConnection {
 	to: Direction;
 }
 
-export interface Conveyor {
+type ConveyorBase = {
 	id: string;
 	name: string;
 	w: number;
 	h: number;
-	patterns: ConveyorConnection[][]; // 可能な搬送パターンの配列
+	patterns: readonly (readonly ConveyorConnection[])[];
+};
+
+export interface Conveyor {
+	id: ConveyorId;
+	name: string;
+	w: number;
+	h: number;
+	patterns: readonly (readonly ConveyorConnection[])[]; // 可能な搬送パターンの配列
 }
 
+type PowerLineBase = {
+	id: string;
+	name: string;
+	w: number;
+	h: number;
+	inradius: number;
+};
+
 export interface PowerLine {
-	id: string; // 伝送線名称(英語)
+	id: PowerLineId; // 伝送線名称(英語)
 	name: string; // 伝送線名称
 	w: number; // 本体w
 	h: number; // 本体h
 	inradius: number; // 影響範囲
 }
 
-export const MACHINES: Machine[] = [
+export const MACHINES = [
 	{
 		id: "Refining Unit",
 		name: "製錬炉",
@@ -87,6 +113,15 @@ export const MACHINES: Machine[] = [
 		powerRequired: 20,
 	},
 	{
+		id: "Packaging Unit",
+		name: "包装機",
+		w: 6,
+		h: 4,
+		inputSides: ["top"],
+		outputSides: ["bottom"],
+		powerRequired: 20,
+	},
+	{
 		id: "Seed-Picking Unit",
 		name: "採種機",
 		w: 5,
@@ -104,9 +139,11 @@ export const MACHINES: Machine[] = [
 		outputSides: ["bottom"],
 		powerRequired: 20,
 	},
-];
+] as const satisfies readonly MachineBase[];
 
-export const CONVEYORS: Conveyor[] = [
+export type MachineId = (typeof MACHINES)[number]["id"];
+
+export const CONVEYORS = [
 	{
 		id: "Belt Conveyor",
 		name: "ベルトコンベア",
@@ -156,9 +193,11 @@ export const CONVEYORS: Conveyor[] = [
 			],
 		],
 	},
-];
+] as const satisfies readonly ConveyorBase[];
 
-export const POWER_LINES: PowerLine[] = [
+export type ConveyorId = (typeof CONVEYORS)[number]["id"];
+
+export const POWER_LINES = [
 	{
 		id: "Relay Tower",
 		name: "中継タワー",
@@ -173,4 +212,6 @@ export const POWER_LINES: PowerLine[] = [
 		h: 2,
 		inradius: 5,
 	},
-];
+] as const satisfies readonly PowerLineBase[];
+
+export type PowerLineId = (typeof POWER_LINES)[number]["id"];

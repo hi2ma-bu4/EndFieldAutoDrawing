@@ -62,6 +62,15 @@ var MACHINES = [
     powerRequired: 20
   },
   {
+    id: "Packaging Unit",
+    name: "\u5305\u88C5\u6A5F",
+    w: 6,
+    h: 4,
+    inputSides: ["top"],
+    outputSides: ["bottom"],
+    powerRequired: 20
+  },
+  {
     id: "Seed-Picking Unit",
     name: "\u63A1\u7A2E\u6A5F",
     w: 5,
@@ -148,6 +157,177 @@ var POWER_LINES = [
     w: 2,
     h: 2,
     inradius: 5
+  }
+];
+
+// src/item_data.ts
+var ITEMS = [
+  { id: "Originium Ore", name: "\u6E90\u77F3\u9271\u7269" },
+  { id: "Amethyst Ore", name: "\u7D2B\u6676\u9271\u7269" },
+  { id: "Ferrium Ore", name: "\u9752\u9244\u9271\u7269" },
+  { id: "Origocrust", name: "\u7D50\u6676\u5916\u6BBB" },
+  { id: "Amethyst Fiber", name: "\u7D2B\u6676\u7E4A\u7DAD" },
+  { id: "Ferrium", name: "\u9752\u9244\u584A" },
+  { id: "Originium Powder", name: "\u6E90\u77F3\u7C89\u672B" },
+  { id: "Origocrust Powder", name: "\u7D50\u6676\u5916\u6BBB\u7C89\u672B" },
+  { id: "Amethyst Powder", name: "\u7D2B\u6676\u7C89\u672B" },
+  { id: "Ferrium Powder", name: "\u9752\u9244\u7C89\u672B" },
+  { id: "Amethyst Bottle", name: "\u7D2B\u6676\u88FD\u30DC\u30C8\u30EB" },
+  { id: "Ferrium Bottle", name: "\u9752\u9244\u88FD\u30DC\u30C8\u30EB" },
+  { id: "Amethyst Part", name: "\u7D2B\u6676\u90E8\u54C1" },
+  { id: "Ferrium Part", name: "\u9244\u88FD\u90E8\u54C1" },
+  { id: "Amethyst Component", name: "\u7D2B\u6676\u88C5\u5099\u90E8\u54C1" },
+  { id: "Ferrium Component", name: "\u9752\u9244\u88C5\u5099\u90E8\u54C1" },
+  { id: "LC Valley Battery", name: "\u5C0F\u5BB9\u91CF\u8C37\u5730\u30D0\u30C3\u30C6\u30EA\u30FC" },
+  { id: "SC Valley Battery", name: "\u4E2D\u5BB9\u91CF\u8C37\u5730\u30D0\u30C3\u30C6\u30EA\u30FC" }
+];
+
+// src/recipe_data.ts
+var RECIPES = [
+  {
+    machineId: "Refining Unit",
+    ingredients: [{ count: 1, itemId: "Originium Ore" }],
+    producedItemId: "Origocrust",
+    producedCount: 1,
+    processingTime: 2
+  },
+  {
+    machineId: "Refining Unit",
+    ingredients: [{ count: 1, itemId: "Originium Powder" }],
+    producedItemId: "Origocrust Powder",
+    producedCount: 1,
+    processingTime: 2
+  },
+  {
+    machineId: "Refining Unit",
+    ingredients: [{ count: 1, itemId: "Origocrust Powder" }],
+    producedItemId: "Origocrust",
+    producedCount: 1,
+    processingTime: 2
+  },
+  {
+    machineId: "Refining Unit",
+    ingredients: [{ count: 1, itemId: "Amethyst Ore" }],
+    producedItemId: "Amethyst Fiber",
+    producedCount: 1,
+    processingTime: 2
+  },
+  {
+    machineId: "Refining Unit",
+    ingredients: [{ count: 1, itemId: "Amethyst Powder" }],
+    producedItemId: "Amethyst Fiber",
+    producedCount: 1,
+    processingTime: 2
+  },
+  {
+    machineId: "Refining Unit",
+    ingredients: [{ count: 1, itemId: "Ferrium Ore" }],
+    producedItemId: "Ferrium",
+    producedCount: 1,
+    processingTime: 2
+  },
+  {
+    machineId: "Refining Unit",
+    ingredients: [{ count: 1, itemId: "Ferrium Powder" }],
+    producedItemId: "Ferrium",
+    producedCount: 1,
+    processingTime: 2
+  },
+  {
+    machineId: "Shredding Unit",
+    ingredients: [{ count: 1, itemId: "Originium Ore" }],
+    producedItemId: "Originium Powder",
+    producedCount: 1,
+    processingTime: 2
+  },
+  {
+    machineId: "Shredding Unit",
+    ingredients: [{ count: 1, itemId: "Origocrust" }],
+    producedItemId: "Origocrust Powder",
+    producedCount: 1,
+    processingTime: 2
+  },
+  {
+    machineId: "Shredding Unit",
+    ingredients: [{ count: 1, itemId: "Amethyst Fiber" }],
+    producedItemId: "Amethyst Powder",
+    producedCount: 1,
+    processingTime: 2
+  },
+  {
+    machineId: "Shredding Unit",
+    ingredients: [{ count: 1, itemId: "Ferrium" }],
+    producedItemId: "Ferrium Powder",
+    producedCount: 1,
+    processingTime: 2
+  },
+  {
+    machineId: "Moulding Unit",
+    ingredients: [{ count: 2, itemId: "Amethyst Fiber" }],
+    producedItemId: "Amethyst Bottle",
+    producedCount: 1,
+    processingTime: 2
+  },
+  {
+    machineId: "Moulding Unit",
+    ingredients: [{ count: 2, itemId: "Ferrium" }],
+    producedItemId: "Ferrium Bottle",
+    producedCount: 1,
+    processingTime: 2
+  },
+  {
+    machineId: "Fitting Unit",
+    ingredients: [{ count: 1, itemId: "Amethyst Fiber" }],
+    producedItemId: "Amethyst Part",
+    producedCount: 1,
+    processingTime: 2
+  },
+  {
+    machineId: "Fitting Unit",
+    ingredients: [{ count: 1, itemId: "Ferrium" }],
+    producedItemId: "Ferrium Part",
+    producedCount: 1,
+    processingTime: 2
+  },
+  {
+    machineId: "Gearing Unit",
+    ingredients: [
+      { count: 5, itemId: "Origocrust" },
+      { count: 5, itemId: "Amethyst Fiber" }
+    ],
+    producedItemId: "Amethyst Component",
+    producedCount: 1,
+    processingTime: 10
+  },
+  {
+    machineId: "Gearing Unit",
+    ingredients: [
+      { count: 10, itemId: "Origocrust" },
+      { count: 10, itemId: "Ferrium" }
+    ],
+    producedItemId: "Ferrium Component",
+    producedCount: 1,
+    processingTime: 10
+  },
+  {
+    machineId: "Packaging Unit",
+    ingredients: [
+      { count: 5, itemId: "Amethyst Part" },
+      { count: 10, itemId: "Originium Powder" }
+    ],
+    producedItemId: "LC Valley Battery",
+    producedCount: 1,
+    processingTime: 10
+  },
+  {
+    machineId: "Packaging Unit",
+    ingredients: [
+      { count: 10, itemId: "Ferrium Part" },
+      { count: 15, itemId: "Originium Powder" }
+    ],
+    producedItemId: "SC Valley Battery",
+    producedCount: 1,
+    processingTime: 10
   }
 ];
 
@@ -244,5 +424,7 @@ window.onload = () => {
   renderer.drawConveyor(15, 10, CONVEYORS[3]);
   renderer.drawPowerLine(20, 20, POWER_LINES[0]);
   renderer.drawPowerLine(35, 20, POWER_LINES[1]);
+  console.log("Items loaded:", ITEMS);
+  console.log("Recipes loaded:", RECIPES);
 };
 //# sourceMappingURL=index.js.map
