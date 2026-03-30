@@ -159,6 +159,78 @@ var POWER_LINES = [
     inradius: 5
   }
 ];
+var WAREHOUSES = [
+  {
+    id: "Agreement Core",
+    name: "\u5354\u7D04\u6838\u5FC3",
+    w: 9,
+    h: 9,
+    inputs: [
+      { side: "top", position: 1 },
+      { side: "top", position: 2 },
+      { side: "top", position: 3 },
+      { side: "top", position: 4 },
+      { side: "top", position: 5 },
+      { side: "top", position: 6 },
+      { side: "top", position: 7 },
+      { side: "bottom", position: 1 },
+      { side: "bottom", position: 2 },
+      { side: "bottom", position: 3 },
+      { side: "bottom", position: 4 },
+      { side: "bottom", position: 5 },
+      { side: "bottom", position: 6 },
+      { side: "bottom", position: 7 }
+    ],
+    outputs: [
+      { side: "left", position: 1 },
+      { side: "left", position: 4 },
+      { side: "left", position: 7 },
+      { side: "right", position: 1 },
+      { side: "right", position: 4 },
+      { side: "right", position: 7 }
+    ],
+    powerRequired: 0,
+    restriction: "agreement_core"
+  },
+  {
+    id: "Depot Unloader",
+    name: "\u5009\u5EAB\u642C\u51FA\u53E3",
+    w: 3,
+    h: 1,
+    inputs: [],
+    outputs: [{ side: "bottom", position: 1 }],
+    powerRequired: 0,
+    restriction: "warehouse_link_hub_side"
+  },
+  {
+    id: "Depot Loader",
+    name: "\u5009\u5EAB\u642C\u5165\u53E3",
+    w: 3,
+    h: 1,
+    inputs: [{ side: "bottom", position: 1 }],
+    outputs: [],
+    powerRequired: 0,
+    restriction: "warehouse_link_hub_side"
+  },
+  {
+    id: "Protocol Stash",
+    name: "\u5354\u7D04\u8CAF\u8535\u7BB1",
+    w: 3,
+    h: 3,
+    inputs: [
+      { side: "top", position: 0, type: "A" },
+      { side: "top", position: 1, type: "A" },
+      { side: "top", position: 2, type: "A" }
+    ],
+    outputs: [
+      { side: "bottom", position: 0, type: "A" },
+      { side: "bottom", position: 1, type: "A" },
+      { side: "bottom", position: 2, type: "A" }
+    ],
+    powerRequired: 5,
+    restriction: "free"
+  }
+];
 
 // src/item_data.ts
 var ITEMS = [
@@ -410,6 +482,38 @@ var MapRenderer = class {
     this.ctx.lineWidth = 1;
     this.ctx.strokeRect(rangeX, rangeY, rangeW, rangeH);
   }
+  drawWarehouse(x, y, warehouse) {
+    this.ctx.fillStyle = "rgba(128, 128, 128, 0.5)";
+    this.ctx.fillRect(x * this.cellSize, y * this.cellSize, warehouse.w * this.cellSize, warehouse.h * this.cellSize);
+    this.ctx.fillStyle = "black";
+    this.ctx.fillText(warehouse.name, x * this.cellSize + 2, y * this.cellSize + 12);
+    this.ctx.fillStyle = "blue";
+    for (const port of warehouse.inputs) {
+      const pos = this.getPortPosition(x, y, warehouse.w, warehouse.h, port);
+      this.ctx.fillRect(pos.x - 2, pos.y - 2, 4, 4);
+    }
+    this.ctx.fillStyle = "red";
+    for (const port of warehouse.outputs) {
+      const pos = this.getPortPosition(x, y, warehouse.w, warehouse.h, port);
+      this.ctx.fillRect(pos.x - 2, pos.y - 2, 4, 4);
+    }
+  }
+  getPortPosition(x, y, w, h, port) {
+    let px = x * this.cellSize;
+    let py = y * this.cellSize;
+    if (port.side === "top") {
+      px += (port.position + 0.5) * this.cellSize;
+    } else if (port.side === "bottom") {
+      px += (port.position + 0.5) * this.cellSize;
+      py += h * this.cellSize;
+    } else if (port.side === "left") {
+      py += (port.position + 0.5) * this.cellSize;
+    } else if (port.side === "right") {
+      px += w * this.cellSize;
+      py += (port.position + 0.5) * this.cellSize;
+    }
+    return { x: px, y: py };
+  }
 };
 window.onload = () => {
   const renderer = new MapRenderer("mapCanvas", 40, 40);
@@ -424,6 +528,9 @@ window.onload = () => {
   renderer.drawConveyor(15, 10, CONVEYORS[3]);
   renderer.drawPowerLine(20, 20, POWER_LINES[0]);
   renderer.drawPowerLine(35, 20, POWER_LINES[1]);
+  renderer.drawWarehouse(20, 5, WAREHOUSES[0]);
+  renderer.drawWarehouse(30, 5, WAREHOUSES[1]);
+  renderer.drawWarehouse(30, 10, WAREHOUSES[2]);
   console.log("Items loaded:", ITEMS);
   console.log("Recipes loaded:", RECIPES);
 };

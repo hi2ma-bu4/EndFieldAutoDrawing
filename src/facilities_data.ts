@@ -57,6 +57,39 @@ export interface PowerLine {
 	inradius: number; // 影響範囲
 }
 
+export type PlacementRestriction =
+	| "agreement_core" // メイン端末(設置数固定1,絶対設置)
+	| "warehouse_link_hub_side" // 倉庫連結ハブの側面にのみ設置可能
+	| "free"; // 自由設置可能
+
+export interface Port {
+	side: Direction; // 面
+	position: number; // 位置 (0からw-1 or h-1)
+	type?: string; // 入出力分類 (A, B, C, etc.)
+}
+
+type WarehouseBase = {
+	id: string;
+	name: string;
+	w: number;
+	h: number;
+	inputs: readonly Port[];
+	outputs: readonly Port[];
+	powerRequired: number;
+	restriction: PlacementRestriction;
+};
+
+export interface Warehouse {
+	id: WarehouseId;
+	name: string;
+	w: number;
+	h: number;
+	inputs: readonly Port[];
+	outputs: readonly Port[];
+	powerRequired: number;
+	restriction: PlacementRestriction;
+}
+
 export const MACHINES = [
 	{
 		id: "Refining Unit",
@@ -215,3 +248,78 @@ export const POWER_LINES = [
 ] as const satisfies readonly PowerLineBase[];
 
 export type PowerLineId = (typeof POWER_LINES)[number]["id"];
+
+export const WAREHOUSES = [
+	{
+		id: "Agreement Core",
+		name: "協約核心",
+		w: 9,
+		h: 9,
+		inputs: [
+			{ side: "top", position: 1 },
+			{ side: "top", position: 2 },
+			{ side: "top", position: 3 },
+			{ side: "top", position: 4 },
+			{ side: "top", position: 5 },
+			{ side: "top", position: 6 },
+			{ side: "top", position: 7 },
+			{ side: "bottom", position: 1 },
+			{ side: "bottom", position: 2 },
+			{ side: "bottom", position: 3 },
+			{ side: "bottom", position: 4 },
+			{ side: "bottom", position: 5 },
+			{ side: "bottom", position: 6 },
+			{ side: "bottom", position: 7 },
+		],
+		outputs: [
+			{ side: "left", position: 1 },
+			{ side: "left", position: 4 },
+			{ side: "left", position: 7 },
+			{ side: "right", position: 1 },
+			{ side: "right", position: 4 },
+			{ side: "right", position: 7 },
+		],
+		powerRequired: 0,
+		restriction: "agreement_core",
+	},
+	{
+		id: "Depot Unloader",
+		name: "倉庫搬出口",
+		w: 3,
+		h: 1,
+		inputs: [],
+		outputs: [{ side: "bottom", position: 1 }],
+		powerRequired: 0,
+		restriction: "warehouse_link_hub_side",
+	},
+	{
+		id: "Depot Loader",
+		name: "倉庫搬入口",
+		w: 3,
+		h: 1,
+		inputs: [{ side: "bottom", position: 1 }],
+		outputs: [],
+		powerRequired: 0,
+		restriction: "warehouse_link_hub_side",
+	},
+	{
+		id: "Protocol Stash",
+		name: "協約貯蔵箱",
+		w: 3,
+		h: 3,
+		inputs: [
+			{ side: "top", position: 0, type: "A" },
+			{ side: "top", position: 1, type: "A" },
+			{ side: "top", position: 2, type: "A" },
+		],
+		outputs: [
+			{ side: "bottom", position: 0, type: "A" },
+			{ side: "bottom", position: 1, type: "A" },
+			{ side: "bottom", position: 2, type: "A" },
+		],
+		powerRequired: 5,
+		restriction: "free",
+	},
+] as const satisfies readonly WarehouseBase[];
+
+export type WarehouseId = (typeof WAREHOUSES)[number]["id"];

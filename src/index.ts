@@ -1,4 +1,4 @@
-import { type Conveyor, CONVEYORS, type Machine, MACHINES, POWER_LINES, type PowerLine } from "./facilities_data";
+import { type Conveyor, CONVEYORS, type Machine, MACHINES, POWER_LINES, type PowerLine, type Warehouse, WAREHOUSES } from "./facilities_data";
 import { ITEMS } from "./item_data";
 import { RECIPES } from "./recipe_data";
 
@@ -97,6 +97,43 @@ class MapRenderer {
 		this.ctx.lineWidth = 1;
 		this.ctx.strokeRect(rangeX, rangeY, rangeW, rangeH);
 	}
+
+	drawWarehouse(x: number, y: number, warehouse: Warehouse) {
+		this.ctx.fillStyle = "rgba(128, 128, 128, 0.5)";
+		this.ctx.fillRect(x * this.cellSize, y * this.cellSize, warehouse.w * this.cellSize, warehouse.h * this.cellSize);
+		this.ctx.fillStyle = "black";
+		this.ctx.fillText(warehouse.name, x * this.cellSize + 2, y * this.cellSize + 12);
+
+		// Draw ports
+		this.ctx.fillStyle = "blue";
+		for (const port of warehouse.inputs) {
+			const pos = this.getPortPosition(x, y, warehouse.w, warehouse.h, port);
+			this.ctx.fillRect(pos.x - 2, pos.y - 2, 4, 4);
+		}
+		this.ctx.fillStyle = "red";
+		for (const port of warehouse.outputs) {
+			const pos = this.getPortPosition(x, y, warehouse.w, warehouse.h, port);
+			this.ctx.fillRect(pos.x - 2, pos.y - 2, 4, 4);
+		}
+	}
+
+	private getPortPosition(x: number, y: number, w: number, h: number, port: { side: string; position: number }) {
+		let px = x * this.cellSize;
+		let py = y * this.cellSize;
+
+		if (port.side === "top") {
+			px += (port.position + 0.5) * this.cellSize;
+		} else if (port.side === "bottom") {
+			px += (port.position + 0.5) * this.cellSize;
+			py += h * this.cellSize;
+		} else if (port.side === "left") {
+			py += (port.position + 0.5) * this.cellSize;
+		} else if (port.side === "right") {
+			px += w * this.cellSize;
+			py += (port.position + 0.5) * this.cellSize;
+		}
+		return { x: px, y: py };
+	}
 }
 
 window.onload = () => {
@@ -116,6 +153,10 @@ window.onload = () => {
 
 	renderer.drawPowerLine(20, 20, POWER_LINES[0]);
 	renderer.drawPowerLine(35, 20, POWER_LINES[1]);
+
+	renderer.drawWarehouse(20, 5, WAREHOUSES[0]);
+	renderer.drawWarehouse(30, 5, WAREHOUSES[1]);
+	renderer.drawWarehouse(30, 10, WAREHOUSES[2]);
 
 	console.log("Items loaded:", ITEMS);
 	console.log("Recipes loaded:", RECIPES);
